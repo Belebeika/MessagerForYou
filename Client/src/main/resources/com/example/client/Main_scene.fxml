@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Bloom?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.effect.MotionBlur?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="Field" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: pink;" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.client.Main_Controller">
+    <children>
+        <AnchorPane fx:id="Up_Field" layoutX="88.0" layoutY="-1.0" prefHeight="95.0" prefWidth="514.0" style="-fx-background-color: #ff538a;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Text fx:id="Name_app" fill="#b70000" layoutX="32.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MessagerForYou❤ " AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
+                    <font>
+                        <Font size="28.0" />
+                    </font>
+                    <effect>
+                        <Glow />
+                    </effect>
+                </Text>
+                <Hyperlink fx:id="logout_link" focusTraversable="false" layoutX="14.0" layoutY="58.0" onAction="#logout" text="Выйти 😢" textFill="#bd00ad" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="10.0">
+                    <font>
+                        <Font size="17.0" />
+                    </font>
+                    <effect>
+                        <MotionBlur radius="2.0" />
+                    </effect>
+                </Hyperlink>
+                <Hyperlink fx:id="search_link" focusTraversable="false" layoutX="96.0" layoutY="62.0" onAction="#searchfriend" text="Найти друга" textFill="#bd00ad" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="96.0">
+                    <font>
+                        <Font size="17.0" />
+                    </font>
+                    <effect>
+                        <MotionBlur radius="2.0" />
+                    </effect>
+                </Hyperlink>
+            <Hyperlink fx:id="user_nick" focusTraversable="false" layoutX="217.0" layoutY="62.0" text="Ваше имя: Антон" textFill="#bd00ad" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="10.0">
+               <font>
+                  <Font size="17.0" />
+               </font>
+               <effect>
+                  <MotionBlur radius="2.0" />
+               </effect>
+            </Hyperlink>
+            </children>
+        </AnchorPane>
+      <ScrollPane layoutX="14.0" layoutY="143.0" prefHeight="249.0" prefWidth="200.0" style="-fx-background-color: #e3f9fc; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: Silver;" AnchorPane.bottomAnchor="8.199999999999989" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="143.0">
+         <content>
+            <VBox prefHeight="242.0" prefWidth="196.0">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <children>
+                  <HBox fx:id="vbox_your_chat" onMouseClicked="#OpenChatWithYourself" prefHeight="26.0" prefWidth="184.0" styleClass="Hbox-Friends">
+                     <children>
+                        <Label text="Избранное">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" top="5.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="Arial" size="16.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                     <effect>
+                        <DropShadow spread="0.06">
+                           <color>
+                              <Color red="1.0" green="0.10000000149011612" blue="0.7900000214576721" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <Text fill="#f830ff" layoutX="20.0" layoutY="127.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ваши друзья" AnchorPane.leftAnchor="50.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+         <effect>
+            <Bloom threshold="0.1" />
+         </effect>
+      </Text>
+      <ScrollPane layoutX="227.0" layoutY="103.0" prefHeight="250.0" prefWidth="364.0" style="-fx-background-color: #e3f9fc; -fx-border-color: Silver;" AnchorPane.bottomAnchor="46.400000000000006" AnchorPane.leftAnchor="227.20000000000005" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="103.0" />
+      <HBox layoutX="228.0" layoutY="358.0" prefHeight="38.0" prefWidth="364.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="225.0" AnchorPane.rightAnchor="8.0">
+         <children>
+            <TextField fx:id="message" prefHeight="27.0" prefWidth="252.0" style="-fx-background-color: #e3f9fc; -fx-border-color: Silver;" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets left="2.0" right="10.0" top="3.0" />
+               </HBox.margin>
+            </TextField>
+            <Button fx:id="button_send" mnemonicParsing="false" onAction="#SendMessage" prefHeight="26.0" prefWidth="202.0" text="Отправить">
+               <HBox.margin>
+                  <Insets right="3.0" top="3.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+    </children>
+    <opaqueInsets>
+        <Insets />
+    </opaqueInsets>
+</AnchorPane>
