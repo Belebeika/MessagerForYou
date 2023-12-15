@@ -57,7 +57,7 @@
         </AnchorPane>
       <ScrollPane layoutX="14.0" layoutY="143.0" prefHeight="249.0" prefWidth="200.0" style="-fx-background-color: #e3f9fc; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: Silver;" AnchorPane.bottomAnchor="8.199999999999989" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="143.0">
          <content>
-            <VBox prefHeight="242.0" prefWidth="196.0">
+            <VBox fx:id="friends_box" prefHeight="242.0" prefWidth="196.0">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
