@@ -30,22 +30,7 @@ public class Server {
         }
     }
 //
-    public void subscribe(ClientHandler client) {
-        if (!(client ==null)) {
-            broadcastMsg("/log " + client.getNickname() + " подключился к чату");
-            clients.add(client);
-            client.sendMsg("/log " + client.getNickname() + ", добро пожаловать в чат!");
-        }
-        broadcastClientsList();
-    }
 
-    public void unsubscribe(ClientHandler client) {
-        if (!(client == null)) {
-            broadcastMsg("/log " + client.getNickname() + " покинул чат");
-            clients.remove(client);
-        }
-        broadcastClientsList();
-    }
 
     public void broadcastMsg(String msg) {
         for (ClientHandler o : clients) {
@@ -73,16 +58,4 @@ public class Server {
         from.sendMsg("/log "+"Клиента с ником " + to + " нет в чате");
     }
 
-    public void broadcastClientsList() {
-        StringBuilder sb = new StringBuilder(15 * clients.size());
-        sb.append("/clientslist ");
-        for (ClientHandler o : clients) {
-            sb.append(o.getNickname() + " ");
-        }
-        // '/clientslist nick1 nick2 '
-        sb.setLength(sb.length() - 1);
-        // '/clientslist nick1 nick2'
-        String out = sb.toString();
-        broadcastMsg(out);
-    }
 }
