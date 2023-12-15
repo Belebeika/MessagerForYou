@@ -1,3 +1,14 @@
+.Label-Friends{
+    -fx-font-family: Arial;
+    -fx-font-size: 16.0;
+    -fx-padding: 5, 0, 5, 5;
+}
+
+.Hbox-Friends{
+    -fx-pref-width: 184;
+    -fx-pref-height: 26;
+    -fx-effect: dropshadow(three-pass-box, #ff1ac9, 10, 0.06, 0, 0);
+}
 
 .Hbox-Friends:hover{
     -fx-background-color: rgba(0,0,0,.1);

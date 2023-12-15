@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.List;
 
 public class ClientHandler {
     private Server server;
@@ -59,7 +61,9 @@ public class ClientHandler {
                             if (tokens.length == 4) {
                                 if (SQLHandler.tryToRegister(tokens[1], tokens[2], tokens[3])) {
                                     sendMsg("Регистрация прошла успешно");
+                                    nickname = tokens[3];
                                     System.out.println("[INFO] Регистрация прошла успешно: "+socket);
+                                    break;
                                 } else {
                                     sendMsg("Логин или ник уже заняты");
                                     System.out.println("[WARNING] : Логин или ник уже заняты: "+socket);
@@ -68,13 +72,11 @@ public class ClientHandler {
                         }
                     }
                     while (true) {
-                        String str = in.readUTF();
                         System.out.println("[INFO] Ожидание сообщения от: "+nickname+"; "+socket);
+                        String str = in.readUTF();
                         System.out.println("[INFO] Сообщение от : " + nickname + ": " + str+"; "+socket);
                         if(str.equals("/authok")) {
-                            server.subscribe(this);
                             System.out.println("[INFO] Клиент ответил об успешной авторизации: "+nickname+"; "+socket);}
-                            System.out.println("[INFO] Добавляем клиента в список: "+nickname+"; "+socket);
 
                     if (!str.startsWith("/")) {
                             server.broadcastMsg(nickname + " " + str);
@@ -107,7 +109,6 @@ public class ClientHandler {
                                     else{ SQLHandler.changeNick(nickname ,tokens[1]);
                                         System.out.println("[INFO] Клиент "+nickname+" сменил ник на "+tokens[1]+": "+socket);
                                           nickname=tokens[1];
-                                          server.broadcastClientsList();
                                         sendMsg("/cn "+nickname);
 
                                     }
@@ -116,11 +117,44 @@ public class ClientHandler {
                                     System.out.println("[WARNING] Неверный формат смены ника(/cn): "+nickname+"; "+socket);
                                 }
                             }
+                            if (str.equals("/friends")){
+                                System.out.println("[INFO] Клиент отправил запрос на друзей: "+nickname+"; "+socket);
+                                List<String> friends = SQLHandler.getFriends(nickname);
+                                String msg = "/friendsok";
+                                for (String o: friends){
+                                    msg += " " + o;
+                                }
+                                sendMsg(msg);
+                            }
+                            if (str.startsWith("/checknick ")){
+                                System.out.println("[INFO] Клиент отправил запрос на имя: "+nickname+"; "+socket);
+                                String[] name = str.split(" ");
+                                String msg = new String();
+                                if (SQLHandler.checknick(name[1])){
+                                    msg = "Друг успешно найден";
+                                }
+                                else{
+                                    msg = "Пользователя с таким ником не существует";
+                                }
+                                sendMsg(msg);
+                            }
+                            if (str.startsWith("/addfriend ")){
+                                System.out.println("[INFO] Клиент отправил запрос на добавление друга: "+nickname+"; "+socket);
+                                String[] name = str.split(" ");
+                                SQLHandler.addfriend(getNickname(), name[1]);
+                                sendMsg("Добавил");
+                            }
+                            if (str.startsWith("/addmess ")){
+                                System.out.println("[INFO] Клиент отправил запрос на отправление сообщения: "+nickname+"; "+socket);
+
+                            }
                         }
                     }
                 } catch (IOException e) {
                     System.out.println("Error CH#001");
                     e.printStackTrace();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 } finally {
                     try {
                         in.close();
@@ -140,7 +174,6 @@ public class ClientHandler {
                         System.out.println("Error CH#004");
                         e.printStackTrace();
                     }
-                    server.unsubscribe(ClientHandler.this);
                 }
             }).start();
         } catch (IOException e) {

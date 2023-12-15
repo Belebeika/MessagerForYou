@@ -60,7 +60,7 @@ public class Login_Controller {
         } else {
             try {
                 if (socket == null || socket.isClosed()) {
-                    socket = new Socket("10.23.2.161", 8189);
+                    socket = new Socket(Main.IP, 8189);
                     in = new DataInputStream(socket.getInputStream());
                     out = new DataOutputStream(socket.getOutputStream());
                 }
@@ -69,6 +69,9 @@ public class Login_Controller {
                 if (str.startsWith("/authok ")) {
                     nickname = str.split("\\s")[1];
                     System.out.println(nickname);
+                    Main.socket = socket;
+                    Main.in = in;
+                    Main.out = out;
                     Main.Nick = nickname;
                     System.out.println(5);   //////////////
                     Childscene("Main_scene.fxml");

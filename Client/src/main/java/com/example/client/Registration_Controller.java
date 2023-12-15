@@ -67,14 +67,17 @@ public class Registration_Controller {
         } else {
             try {
                 if (socket == null || socket.isClosed()) {
-                    socket = new Socket("10.23.2.161", 8189);
+                    socket = new Socket(Main.IP, 8189);
                     in = new DataInputStream(socket.getInputStream());
                     out = new DataOutputStream(socket.getOutputStream());
                     if (checkCombination(login_field.getText()) && checkCombination(nickname_field.getText())) {
                         out.writeUTF("/registration " + login_field.getText() + " " + sha256(password_field.getText()) + " " + nickname_field.getText());
                         System.out.println("Отправили в регу данные и ;ltv jndtnf");
                         String answer = in.readUTF();
-                        if (answer == "Регистрация прошла успешно") {
+                        if (answer.equals("Регистрация прошла успешно")) {
+                            Main.socket = socket;
+                            Main.in = in;
+                            Main.out = out;
                             Main.Nick = nickname_field.getText();
                             Childscene("Main_scene.fxml");
                         }
@@ -82,22 +85,6 @@ public class Registration_Controller {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
