@@ -61,6 +61,7 @@ public class ClientHandler {
                             if (tokens.length == 4) {
                                 if (SQLHandler.tryToRegister(tokens[1], tokens[2], tokens[3])) {
                                     sendMsg("Регистрация прошла успешно");
+                                    nickname = tokens[3];
                                     System.out.println("[INFO] Регистрация прошла успешно: "+socket);
                                     break;
                                 } else {
@@ -77,11 +78,11 @@ public class ClientHandler {
                         if(str.equals("/authok")) {
                             System.out.println("[INFO] Клиент ответил об успешной авторизации: "+nickname+"; "+socket);}
 
-                        if (!str.startsWith("/")) {
+                    if (!str.startsWith("/")) {
                             server.broadcastMsg(nickname + " " + str);
                             System.out.println("[INFO] Клиент "+nickname+" оправил всем сообщение: \""+str+"\"; "+socket);
 
-                        } else {
+                    } else {
                             if (str.equals("/end")) {
                                 System.out.println("[INFO] Клиент завершил сессию: "+nickname+"; "+socket);
                                 break;
@@ -103,11 +104,11 @@ public class ClientHandler {
                                 String[] tokens = str.split("\\s", 3);
                                 if (tokens.length == 2) {
                                     if(server.isNickBusy(tokens[1])){ sendMsg("/log Никнейм уже занят");
-                                        System.out.println("[WARNING] Nickname на смену уже занят: "+nickname+"; "+socket);
+                                    System.out.println("[WARNING] Nickname на смену уже занят: "+nickname+"; "+socket);
                                     }
                                     else{ SQLHandler.changeNick(nickname ,tokens[1]);
                                         System.out.println("[INFO] Клиент "+nickname+" сменил ник на "+tokens[1]+": "+socket);
-                                        nickname=tokens[1];
+                                          nickname=tokens[1];
                                         sendMsg("/cn "+nickname);
 
                                     }
@@ -143,6 +144,10 @@ public class ClientHandler {
                                 SQLHandler.addfriend(getNickname(), name[1]);
                                 sendMsg("Добавил");
                             }
+                            if (str.startsWith("/addmess ")){
+                                System.out.println("[INFO] Клиент отправил запрос на отправление сообщения: "+nickname+"; "+socket);
+
+                            }
                         }
                     }
                 } catch (IOException e) {
@@ -175,7 +180,7 @@ public class ClientHandler {
             e.printStackTrace();
         }
     }
-    //
+//
     public void sendMsg(String msg) {
         try {
             System.out.println(socket+"\n"+msg);
