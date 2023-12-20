@@ -31,10 +31,15 @@ public class Server {
     }
 //
 
+    public void subscribe(ClientHandler client) {
+        if (!(client ==null)) {
+            clients.add(client);
+        }
+    }
 
-    public void broadcastMsg(String msg) {
-        for (ClientHandler o : clients) {
-            o.sendMsg(msg);
+    public void unsubscribe(ClientHandler client) {
+        if (!(client == null)) {
+            clients.remove(client);
         }
     }
 
@@ -50,12 +55,8 @@ public class Server {
     public void personalMsg(ClientHandler from, String to, String msg) {
         for (ClientHandler o : clients) {
             if(o.getNickname().equals(to)) {
-                o.sendMsg("from " + from.getNickname() + ": " + msg);
-                from.sendMsg("to " + to + ": " + msg);
-                return;
+                o.sendMsg("/from " + from.getNickname() + " " + msg);
             }
         }
-        from.sendMsg("/log "+"Клиента с ником " + to + " нет в чате");
     }
-
 }

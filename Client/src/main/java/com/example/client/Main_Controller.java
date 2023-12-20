@@ -5,24 +5,22 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 public class Main_Controller {
@@ -32,6 +30,7 @@ public class Main_Controller {
     private DataOutputStream out;
     private String nickname;
     private String address_nickname;
+    public Thread thread;
 
     @FXML
     private ResourceBundle resources;
@@ -70,30 +69,134 @@ public class Main_Controller {
     private VBox friends_box;
 
     @FXML
+    private VBox chat;
+
+    @FXML
     void OpenChatWithYourself(MouseEvent event) {
 
     }
 
+    void AddYourMess(String mg){
+        HBox hb = new HBox();
+        hb.getStyleClass().add("Hbox-your-mess");
+        hb.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        TextFlow flow = new TextFlow();
+        flow.getStyleClass().add("Flow-your-mess");
+        flow.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        Text mess = new Text();
+        mess.getStyleClass().add("Mess");
+        mess.setText(mg);
+        flow.getChildren().add(mess);
+        hb.getChildren().add(flow);
+        chat.getChildren().add(hb);
+    }
+
+    void AddFriendMess(String mg){
+        HBox hb = new HBox();
+        hb.getStyleClass().add("Hbox-friend-mess");
+        TextFlow flow = new TextFlow();
+        flow.getStyleClass().add("Flow-friend-mess");
+        Text mess = new Text();
+        mess.getStyleClass().add("Mess");
+        mess.setText(mg);
+        flow.getChildren().add(mess);
+        hb.getChildren().add(flow);
+        chat.getChildren().add(hb);
+    }
     void OpenChat(){
-        sendMsg("/getchat " + address_nickname);
+//        Text text = new Text();
+//        text.setText(address_nickname);
+//        chat.getChildren().add(text);
+        thread = new Thread(() -> {
+            try {
+                sendMsg("/getchat " + address_nickname);
+                while (true) {
+                    String str = in.readUTF();
+                    System.out.println(str);
+                    if (str.startsWith("/chatok")){
+                        String msg = new String();
+                        String[] b = str.split(" ");
+                        ArrayList<String> msgs= new ArrayList<>(Arrays.asList(b));
+                        msgs.remove(0);
+                        for (String o: msgs){
+                            if (!Objects.equals(o, "0") && !Objects.equals(o, "1")){
+                                if (msg != null){
+                                    msg += " " + o;
+                                }
+                                else{
+                                    msg = o;
+                                }
+                            }
+                            else{
+                                if (o.equals("1")){
+                                    String finalMsg = msg;
+                                    msg = null;
+                                    Platform.runLater(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            AddYourMess(finalMsg);
+                                        }
+                                    });
+                                }
+                                else{
+                                    String finalMsg1 = msg;
+                                    msg = null;
+                                    Platform.runLater(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            AddFriendMess(finalMsg1);
+                                        }
+                                    });                                }
+                            }
+                        }
+                    }
+                    else if(str.equals("/overthread")){
+                        break;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
     }
 
     @FXML
     void SendMessage(ActionEvent event) {
         if (address_nickname != null && !message.getText().isEmpty()){
-            sendMsg("/addmess " + address_nickname  + " " + message.getText());
+            String[] a = message.getText().split("");
+            String msg = "";
+            for (int i = 0; i < a.length; i++){
+                if (!(a[i].equals(" ") && msg.equals(""))){
+                    msg += a[i];
+                }
+            }
+            sendMsg("/addmess " + address_nickname  + " " + msg);
+            AddYourMess(msg);
             message.clear();
         }
     }
 
     @FXML
     void logout(ActionEvent event) throws IOException {
+        if (thread != null){
+            sendMsg("/unconnect");
+            while(thread.isAlive()){
+            }
+        }
         sendMsg("/end");
         Childscene("Login_scene.fxml");
     }
 
     @FXML
     void searchfriend(ActionEvent event) {
+        if (thread != null){
+            sendMsg("/unconnect");
+            while(thread.isAlive()){
+            }
+        }
         Childscene("SearchFriend_scene.fxml");
     }
 
@@ -118,6 +221,20 @@ public class Main_Controller {
                     hb.getStyleClass().add("HBox-Friends");
                     hb.getChildren().add(lb);
                     hb.getStyleClass().add("Hbox-Friends");
+                    hb.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            Label lable = (Label) hb.getChildren().getFirst();
+                            address_nickname = lable.getText();
+                            chat.getChildren().clear();
+                            if (thread != null){
+                                sendMsg("/unconnect");
+                                while(thread.isAlive()){
+                                }
+                            }
+                            OpenChat();
+                        }
+                    });
                     Platform.runLater(() -> friends_box.getChildren().add(hb));
                 }
             }

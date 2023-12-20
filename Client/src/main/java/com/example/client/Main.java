@@ -14,7 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class Main extends Application {
-    public static String IP = "10.23.4.28";
+    public static String IP = "10.23.19.176";
     public static Socket socket;
     public static DataInputStream in;
     public static DataOutputStream out;
@@ -49,6 +49,7 @@ public class Main extends Application {
     @Override
     public void stop(){
         if (socket != null){
+            sendMsg("/unconnect");
             sendMsg("/end");
         }
     }

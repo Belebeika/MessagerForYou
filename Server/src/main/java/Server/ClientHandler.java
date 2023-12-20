@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 public class ClientHandler {
@@ -79,12 +80,12 @@ public class ClientHandler {
                             System.out.println("[INFO] Клиент ответил об успешной авторизации: "+nickname+"; "+socket);}
 
                     if (!str.startsWith("/")) {
-                            server.broadcastMsg(nickname + " " + str);
                             System.out.println("[INFO] Клиент "+nickname+" оправил всем сообщение: \""+str+"\"; "+socket);
 
                     } else {
                             if (str.equals("/end")) {
                                 System.out.println("[INFO] Клиент завершил сессию: "+nickname+"; "+socket);
+                                server.unsubscribe(this);
                                 break;
                             }
                             if (str.startsWith("/w ")) {
@@ -144,9 +145,31 @@ public class ClientHandler {
                                 SQLHandler.addfriend(getNickname(), name[1]);
                                 sendMsg("Добавил");
                             }
+                            if (str.startsWith("/getchat ")){
+                                System.out.println("[INFO] Клиент отправил запрос на получение сообщений: "+nickname+"; "+socket);
+                                String[] name = str.split(" ");
+                                List<List<String>> friends = SQLHandler.getchat(getNickname(), name[1]);
+                                String msg = "/chatok";
+                                for (List<String> o: friends){
+                                    msg += " " + o.get(0) + " " + o.get(1);
+                                }
+                                server.subscribe(this);
+                                sendMsg(msg);
+                            }
                             if (str.startsWith("/addmess ")){
                                 System.out.println("[INFO] Клиент отправил запрос на отправление сообщения: "+nickname+"; "+socket);
-
+                                String[] name = str.split(" ");
+                                System.out.println(name[1] + " " +  name[2]);
+                                String msg = name[2];
+                                for (int i = 3; i < Arrays.stream(name).count(); i++){
+                                    msg += " " + name[i];
+                                }
+                                SQLHandler.addmessage(getNickname(), name[1], msg);
+                                server.personalMsg(this, name[1], name[2]);
+                            }
+                            if (str.equals("/unconnect")){
+                                server.unsubscribe(this);
+                                sendMsg("/overthread");
                             }
                         }
                     }

@@ -96,7 +96,13 @@
             <Bloom threshold="0.1" />
          </effect>
       </Text>
-      <ScrollPane layoutX="227.0" layoutY="103.0" prefHeight="250.0" prefWidth="364.0" style="-fx-background-color: #e3f9fc; -fx-border-color: Silver;" AnchorPane.bottomAnchor="46.400000000000006" AnchorPane.leftAnchor="227.20000000000005" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="103.0" />
+      <ScrollPane blendMode="SRC_ATOP" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" layoutX="227.2" layoutY="103.0" nodeOrientation="LEFT_TO_RIGHT" pannable="true" prefHeight="249.0" prefWidth="344.0" style="-fx-background-color: #e3f9fc; -fx-border-color: Silver;" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="227.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="103.0">
+         <content>
+            <VBox fx:id="chat" alignment="BOTTOM_LEFT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="243.0" prefWidth="362.0" />
+         </content>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets></ScrollPane>
       <HBox layoutX="228.0" layoutY="358.0" prefHeight="38.0" prefWidth="364.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="225.0" AnchorPane.rightAnchor="8.0">
          <children>
             <TextField fx:id="message" prefHeight="27.0" prefWidth="252.0" style="-fx-background-color: #e3f9fc; -fx-border-color: Silver;" HBox.hgrow="ALWAYS">
